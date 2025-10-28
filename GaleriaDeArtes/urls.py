@@ -16,7 +16,9 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from GaleriaApp.views import ArteListView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('arte_list/', ArteListView.as_view(), name='arte_list'),
 ]
