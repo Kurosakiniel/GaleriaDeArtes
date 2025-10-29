@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Excluir Arte</title>
+</head>
+<body>
+    <h1>Tem certeza que deseja excluir "{{ object.nome }}"?</h1>
+
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit">Confirmar exclusão</button>
+    </form>
+
+    <a href="{% url 'arte_list' %}">Cancelar</a>
+</body>
+</html>

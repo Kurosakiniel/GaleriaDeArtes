@@ -6,7 +6,10 @@
 </head>
 <body>
     <h1>Galeria de Artes</h1>
+    <!-- Ta autoexplicativo aqui '-' -->
+    <a href="{% url 'arte-create' %}">Cadastrar nova arte</a>
 
+    <!-- templates tag para um form de arte, com botões de editar e excluir-->
     {% for arte in artes %}
         <div style="border: 1px solid #ccc; padding: 10px; margin-bottom: 20px;">
             <h2>{{ arte.nome }}</h2>
@@ -18,6 +21,8 @@
             {% if arte.descricao %}
                 <p>{{ arte.descricao }}</p>
             {% endif %}
+            <a href="{% url 'arte-update' arte.pk %}">Editar</a>
+            <a href="{% url 'arte-delete' arte.pk %}">Excluir</a>
         </div>
     {% empty %}
         <p>Nenhuma arte disponível.</p>

@@ -15,10 +15,18 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
+from django.conf import settings
+from django.conf.urls.static import static
 from django.urls import path
-from GaleriaApp.views import ArteListView
+from GaleriaApp.views import ArteListView, ArteCreateView, ArteUpdateView, ArteDeleteView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('arte_list/', ArteListView.as_view(), name='arte_list'),
+    path('nova/', ArteCreateView.as_view(), name='arte-create'),
+    path('<int:pk>/editar/', ArteUpdateView.as_view(), name='arte-update'),
+    path('<int:pk>/deletar/', ArteDeleteView.as_view(), name='arte-delete'),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
