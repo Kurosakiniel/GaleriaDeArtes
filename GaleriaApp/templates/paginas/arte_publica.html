@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Galeria Pública</title>
+</head>
+<body>
+    <h1>🎨 Galeria de Artes</h1>
+    
+    <!-- Filtro de categorias -->
+    <div>
+        <h3>Filtrar por categoria:</h3>
+        <form method="get">
+            <select name="categoria">
+                <option value="">Todas</option>
+                {% for categoria in categorias %}
+                    <option value="{{ categoria.nome }}">{{ categoria.nome }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">Filtrar</button>
+        </form>
+    </div>
+    
+    <!-- Listagem de artes -->
+    {% for arte in artes %}
+        <div style="border:1px solid #ccc; padding:10px; margin:10px 0;">
+            <h2>{{ arte.nome }}</h2>
+            <p><strong>Categoria:</strong> {{ arte.categoria.nome }}</p>
+            <p><strong>Preço:</strong> R$ {{ arte.preco }}</p>
+            {% if arte.imagem %}
+                <img src="{{ arte.imagem.url }}" width="200" alt="{{ arte.nome }}">
+            {% endif %}
+            <p>{{ arte.descricao }}</p>
+
+            <a href="{% url 'login' %}">Comprar</a> <!--Botãozin pra comprar aqui, ta levando pro login por enquanto, sistema de pedido não existe-->
+        </div>
+    {% empty %}
+        <p>Nenhuma arte disponível.</p>
+    {% endfor %}
+</body>
+</html>

@@ -1,6 +1,6 @@
 from django.urls import path
 from django.contrib.auth.views import LoginView, LogoutView
-from .views import ArteListView, ArteCreateView, ArteUpdateView, ArteDeleteView
+from .views import ArteListView, ArteCreateView, ArteUpdateView, ArteDeleteView, GaleriaPublicaView, UsuarioCreateView
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -9,8 +9,10 @@ urlpatterns = [
     path('nova/', ArteCreateView.as_view(), name='arte-create'),
     path('<int:pk>/editar/', ArteUpdateView.as_view(), name='arte-update'),
     path('<int:pk>/deletar/', ArteDeleteView.as_view(), name='arte-delete'), # até aqui é só admin que vê
-    path('login/', LoginView.as_view(template_name='paginas/login.html'), name='login'),
+    path('login/', LoginView.as_view(template_name='paginas/login.html'), name='login'), # Aqui pra baixo é coisa de usuário
     path('logout/', LogoutView.as_view(next_page='arte_list'), name='logout'),
+    path('galeria/', GaleriaPublicaView.as_view(), name='galeria'),
+    path('criar-conta/', UsuarioCreateView.as_view(), name='usuario_create'), 
 ]
 
 if settings.DEBUG:

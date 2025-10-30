@@ -8,11 +8,43 @@ from .models import Arte, Categoria, Usuario
 # Create your views here.
 
 # Usuario --------------------------------------------------------------------------
-git 
+class ArteListView(ListView):
+    model = Arte
+    template_name = 'paginas/arte_list.html'  
+    context_object_name = 'artes'  
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        categoria_nome = self.request.GET.get('categoria')  
+        if categoria_nome:
+            qs = qs.filter(categoria__nome__iexact=categoria_nome)
+        return qs
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['categorias'] = Categoria.objects.all()  
+        return context
+    
+class GaleriaPublicaView(ListView):
+    model = Arte
+    template_name = 'paginas/arte_publica.html'
+    context_object_name = 'artes'
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        categoria_nome = self.request.GET.get('categoria')
+        if categoria_nome:
+            qs = qs.filter(categoria__nome__iexact=categoria_nome)
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['categorias'] = Categoria.objects.all()
+        return context    
     
 class UsuarioCreateView(CreateView):
     model = Usuario
-    fields = ['email', 'idade', 'password']  
+    fields = ['email', 'idade', 'password']  # 
     template_name = 'paginas/usuario_form.html'
     success_url = reverse_lazy('login')  # redireciona pro login após cadastro
 
@@ -22,6 +54,7 @@ class UsuarioCreateView(CreateView):
         usuario.set_password(form.cleaned_data['password'])
         usuario.save()
         return super().form_valid(form)
+
 
 # Admin ----------------------------------------------------------------------------
 class ArteCreateView(CreateView):
