@@ -4,6 +4,7 @@ from django.views.generic import ListView
 from django.views.generic import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from .models import Arte, Categoria, Usuario
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 # Create your views here.
 
@@ -44,7 +45,7 @@ class GaleriaPublicaView(ListView):
     
 class UsuarioCreateView(CreateView):
     model = Usuario
-    fields = ['email', 'idade', 'password']  # 
+    fields = ['username', 'email', 'idade', 'password']  
     template_name = 'paginas/usuario_form.html'
     success_url = reverse_lazy('login')  # redireciona pro login após cadastro
 
@@ -57,6 +58,23 @@ class UsuarioCreateView(CreateView):
 
 
 # Admin ----------------------------------------------------------------------------
+class ArteListView(ListView):
+    model = Arte
+    template_name = 'paginas/arte_list.html'  
+    context_object_name = 'artes'  
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        categoria_nome = self.request.GET.get('categoria')  
+        if categoria_nome:
+            qs = qs.filter(categoria__nome__iexact=categoria_nome)
+        return qs
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['categorias'] = Categoria.objects.all()  
+        return context
+
 class ArteCreateView(CreateView):
     model = Arte
     fields = ['nome', 'categoria', 'preco', 'imagem', 'descricao']

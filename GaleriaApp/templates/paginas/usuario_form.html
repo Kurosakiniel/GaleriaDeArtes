@@ -1,7 +1,25 @@
-<h1>Cadastrar Usuário</h1>
+<!-- templates/paginas/usuario_form.html -->
+<h1>Criar Conta</h1>
+
 <form method="post">
     {% csrf_token %}
-    {{ form.as_p }}
+    <p>
+        <label for="id_username">Username:</label>
+        <input type="text" name="username" id="id_username" required>
+    </p>
+    <p>
+        <label for="id_email">Email:</label>
+        <input type="email" name="email" id="id_email" required>
+    </p>
+    <p>
+        <label for="id_idade">Idade:</label>
+        <input type="number" name="idade" id="id_idade" min="1">
+    </p>
+    <p>
+        <label for="id_password">Senha:</label>
+        <input type="password" name="password" id="id_password" required>
+    </p>
     <button type="submit">Cadastrar</button>
 </form>
-<a href="{% url 'login' %}">Já tem conta? Faça login</a>
+
+<p>Já tem conta? <a href="{% url 'login' %}">Faça login</a></p>
