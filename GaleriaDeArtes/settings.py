@@ -131,6 +131,12 @@ STATICFILES_DIRS = [
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
+# Configurações de autenticação
+AUTH_USER_MODEL = 'GaleriaApp.Usuario'  
+
+LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/galeria/'
+LOGOUT_REDIRECT_URL = 'galeria/'  # para onde vai depois de sair
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field

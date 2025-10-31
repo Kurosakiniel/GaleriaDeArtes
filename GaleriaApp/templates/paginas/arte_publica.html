@@ -1,0 +1,62 @@
+<!-- templates/paginas/arte_publica.html -->
+
+<h1>Galeria de Artes</h1>
+
+<!-- Menu superior -->
+<div style="margin-bottom: 20px;">
+    {% if user.is_authenticated %}
+        <p>Bem-vindo, {{ user.email }}!</p>
+
+        <!-- Foda-se tudo se não tiver esse form o logout não funciona, é isso, o mundo é ruim mais nois é cruel B)-->
+        <form method="post" action="{% url 'logout' %}" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit">Sair</button>
+        </form>
+
+        <a href="{% url 'logout' %}">Sair</a>
+        <a href="#">Meus Pedidos</a>  <!-- ainda vamos criar -->
+    {% else %}
+        <a href="{% url 'login' %}">Login</a> |
+        <a href="{% url 'usuario_create' %}">Cadastrar-se</a>
+    {% endif %}
+</div>
+
+
+<!-- Filtro por categoria -->
+<form method="get">
+    <select name="categoria" onchange="this.form.submit()">
+        <option value="">Todas as categorias</option>
+        {% for categoria in categorias %}
+            <option value="{{ categoria.nome }}" {% if request.GET.categoria == categoria.nome %}selected{% endif %}>
+                {{ categoria.nome }}
+            </option>
+        {% endfor %}
+    </select>
+</form>
+
+<hr>
+
+<!-- Listagem das artes -->
+<div style="display: flex; flex-wrap: wrap; gap: 20px;">
+    {% for arte in artes %}
+        <div style="border: 1px solid #ccc; padding: 10px; width: 250px;">
+            {% if arte.imagem %}
+                <img src="{{ arte.imagem.url }}" alt="{{ arte.nome }}" style="width:100%; height:auto;">
+            {% endif %}
+            <h3>{{ arte.nome }}</h3>
+            <p>{{ arte.descricao }}</p>
+            <p><strong>R$ {{ arte.preco }}</strong></p>
+
+            {% if user.is_authenticated %}
+                <form action="#" method="post">
+                    {% csrf_token %}
+                    <button type="submit">Comprar</button>
+                </form>
+            {% else %}
+                <a href="{% url 'login' %}?next={% url 'galeria' %}">Comprar</a>
+            {% endif %}
+        </div>
+    {% empty %}
+        <p>Nenhuma arte encontrada.</p>
+    {% endfor %}
+</div>

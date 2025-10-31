@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Galeria de Artes</title>
+</head>
+<body>
+    <h1>Galeria de Artes</h1>
+    <!-- Ta autoexplicativo aqui '-' -->
+    <a href="{% url 'arte-create' %}">Cadastrar nova arte</a>
+
+    <!-- templates tag para um form de arte, com botões de editar e excluir-->
+    {% for arte in artes %}
+        <div style="border: 1px solid #ccc; padding: 10px; margin-bottom: 20px;">
+            <h2>{{ arte.nome }}</h2>
+            <p><strong>Categoria:</strong> {{ arte.categoria.nome }}</p>
+            <p><strong>Preço:</strong> R$ {{ arte.preco }}</p>
+            {% if arte.imagem %}
+                <img src="{{ arte.imagem.url }}" alt="{{ arte.nome }}" width="200">
+            {% endif %}
+            {% if arte.descricao %}
+                <p>{{ arte.descricao }}</p>
+            {% endif %}
+            <a href="{% url 'arte-update' arte.pk %}">Editar</a>
+            <a href="{% url 'arte-delete' arte.pk %}">Excluir</a>
+        </div>
+    {% empty %}
+        <p>Nenhuma arte disponível.</p>
+    {% endfor %}
+</body>
+</html>
