@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block title %}Criar Conta{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center mt-5">
+    <div class="col-md-5">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                Criar Conta
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label for="id_username" class="form-label">Username</label>
+                        <input type="text" name="username" id="id_username" class="form-control" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="id_email" class="form-label">Email</label>
+                        <input type="email" name="email" id="id_email" class="form-control" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="id_idade" class="form-label">Idade</label>
+                        <input type="number" name="idade" id="id_idade" class="form-control" min="1">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="id_password" class="form-label">Senha</label>
+                        <input type="password" name="password" id="id_password" class="form-control" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-success w-100">Cadastrar</button>
+                </form>
+            </div>
+            <div class="card-footer text-center">
+                <p>Já tem conta? <a href="{% url 'login' %}">Faça login</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

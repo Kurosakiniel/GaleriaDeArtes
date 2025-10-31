@@ -1,0 +1,50 @@
+{% extends 'galeriaapp/base.html' %}
+
+{% block title %}Meus Pedidos{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Meus Pedidos</h1>
+
+{% if pedidos %}
+<div class="row">
+    {% for pedido in pedidos %}
+        <div class="col-md-6 mb-4">
+            <div class="card h-100 border-primary">
+                <div class="card-header bg-primary text-white">
+                    Pedido #{{ pedido.id }} - {{ pedido.status }}
+                </div>
+                <div class="card-body">
+                    <p><strong>Data:</strong> {{ pedido.data_criacao }}</p>
+                    <p><strong>Total:</strong> R$ {{ pedido.total }}</p>
+                    <strong>Artes:</strong>
+                    <ul class="list-group list-group-flush mb-3">
+                        {% for arte in pedido.artes.all %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <span>{{ arte.nome }} - R$ {{ arte.preco }}</span>
+                                {% if arte.imagem %}
+                                    <img src="{{ arte.imagem.url }}" alt="{{ arte.nome }}" class="img-thumbnail" style="width:80px;">
+                                {% endif %}
+                            </li>
+                        {% empty %}
+                            <li class="list-group-item">Nenhuma arte neste pedido.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="card-footer">
+                    {% if pedido.status == 'Pendente' %}
+                        <form method="post" action="{% url 'finalizar_pedido' pedido.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-success btn-sm">Concluir Pedido</button>
+                        </form>
+                    {% else %}
+                        <span class="text-success fw-bold">Pedido concluído!</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+{% else %}
+    <p>Você ainda não adicionou nenhuma arte.</p>
+{% endif %}
+{% endblock %}
