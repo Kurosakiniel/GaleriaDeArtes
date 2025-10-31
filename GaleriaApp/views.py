@@ -1,9 +1,10 @@
 from django.shortcuts import get_object_or_404, redirect
 from django.views import View
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django.views.generic import ListView,CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from .models import Arte, Categoria, Usuario, Pedido
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+
 
 # Create your views here.
 
@@ -12,22 +13,13 @@ class GaleriaPublicaView(ListView):
     model = Arte
     template_name = 'galeriaapp/arte_publica.html'
     context_object_name = 'artes'
-    paginate_by = 6  # número de artes por página
 
     def get_queryset(self):
         qs = super().get_queryset()
         categoria_nome = self.request.GET.get('categoria')
-        buscar = self.request.GET.get('buscar')
-        ordenacao = self.request.GET.get('ordenar') 
         if categoria_nome:
             qs = qs.filter(categoria__nome__iexact=categoria_nome)
-        if buscar:
-            qs = qs.filter(nome__icontains=buscar) | qs.filter(descricao__icontains=buscar)
-        if ordenacao:
-            qs = qs.order_by(ordenacao)
-
         return qs.exclude(id__isnull=True)  # remove qualquer arte sem id
-
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -100,21 +92,12 @@ class ArteListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
     model = Arte
     template_name = 'galeriaapp/arte_list.html'  
     context_object_name = 'artes'  
-    paginate_by = 10  # número de artes por página
-
 
     def get_queryset(self):
         qs = super().get_queryset()
-        categoria_nome = self.request.GET.get('categoria')
-        buscar = self.request.GET.get('buscar')
-        ordenacao = self.request.GET.get('ordenar')
+        categoria_nome = self.request.GET.get('categoria')  
         if categoria_nome:
             qs = qs.filter(categoria__nome__iexact=categoria_nome)
-        if buscar:
-            qs = qs.filter(nome__icontains=buscar) | qs.filter(descricao__icontains=buscar)
-        if ordenacao:
-            qs = qs.order_by(ordenacao)
-            
         return qs
     
     def get_context_data(self, **kwargs):
