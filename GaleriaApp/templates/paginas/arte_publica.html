@@ -34,6 +34,20 @@
 
 <hr>
 
+<!-- Ordenação -->
+<form method="get" style="margin-bottom: 20px;">
+    <select name="ordenar">
+        <option value="">Ordenar por...</option>
+        <option value="nome" {% if request.GET.ordenar == "nome" %}selected{% endif %}>Nome (A-Z)</option>
+        <option value="-nome" {% if request.GET.ordenar == "-nome" %}selected{% endif %}>Nome (Z-A)</option>
+        <option value="preco" {% if request.GET.ordenar == "preco" %}selected{% endif %}>Preço (menor-maior)</option>
+        <option value="-preco" {% if request.GET.ordenar == "-preco" %}selected{% endif %}>Preço (maior-menor)</option>
+    </select>
+
+    <button type="submit">Filtrar</button>
+</form>
+
+<hr>
 <!-- Listagem das artes -->
 <div style="display: flex; flex-wrap: wrap; gap: 20px;">
   {% for arte in artes %}
@@ -45,6 +59,7 @@
         <p>{{ arte.descricao }}</p>
         <p><strong>R$ {{ arte.preco }}</strong></p>
 
+<<<<<<< HEAD
         {% if user.is_authenticated %}
             <!-- Aqui está o form correto -->
             <form method="post" action="{% url 'adicionar_ao_pedido' arte.id %}">
@@ -57,3 +72,33 @@
     </div>
 {% endfor %}
 </div>
+=======
+            {% if user.is_authenticated %}
+                <form action="#" method="post">
+                    {% csrf_token %}
+                    <button type="submit">Comprar</button>
+                </form>
+            {% else %}
+                <a href="{% url 'login' %}?next={% url 'galeria' %}">Comprar</a>
+            {% endif %}
+        </div>
+    {% empty %}
+        <p>Nenhuma arte encontrada.</p>
+    {% endfor %}
+</div>
+
+<hr>
+
+<!-- Paginação -->
+<div style="margin-top: 20px;">
+    {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.busca %}&busca={{ request.GET.busca }}{% endif %}{% if request.GET.categoria %}&categoria={{ request.GET.categoria }}{% endif %}{% if request.GET.ordenar %}&ordenar={{ request.GET.ordenar }}{% endif %}">Anterior</a>
+    {% endif %}
+
+    <span>Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
+
+    {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}{% if request.GET.busca %}&busca={{ request.GET.busca }}{% endif %}{% if request.GET.categoria %}&categoria={{ request.GET.categoria }}{% endif %}{% if request.GET.ordenar %}&ordenar={{ request.GET.ordenar }}{% endif %}">Próxima</a>
+    {% endif %}
+</div>
+>>>>>>> becf18b (Ajeitando)
