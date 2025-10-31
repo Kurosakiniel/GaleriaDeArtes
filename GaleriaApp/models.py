@@ -14,10 +14,21 @@ class UsuarioManager(BaseUserManager,):
         return user
 
     def create_superuser(self, email, password=None, **extra_fields):
-        extra_fields.setdefault('is_staff', True)
-        extra_fields.setdefault('is_superuser', True)
-        return self.create_user(email, password, **extra_fields)
+            extra_fields.setdefault('is_staff', True)
+            extra_fields.setdefault('is_superuser', True)
+            extra_fields.setdefault('is_active', True)
 
+            if extra_fields.get('is_staff') is not True:
+                raise ValueError('O superusuário deve ter is_staff=True')
+            if extra_fields.get('is_superuser') is not True:
+                raise ValueError('O superusuário deve ter is_superuser=True')
+
+            return self.create_user(email, password, **extra_fields)
+
+    class Meta:
+        verbose_name = "Usuário"
+        verbose_name_plural = "Usuários"
+    
 class Usuario(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
     username = models.CharField(max_length=100, blank=True, null=True)  # opcional
@@ -50,14 +61,14 @@ class Arte(models.Model):
 
     def __str__(self):
         return self.nome
-    
+
 class Pedido(models.Model):
     STATUS_CHOICES = (
         ('Pendente', 'Pendente'),
         ('Entregue', 'Entregue'),
     )
 
-    cliente = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name='pedidos')
+    cliente = models.ForeignKey(Usuario, on_delete=models.PROTECT, related_name='pedidos')
     artes = models.ManyToManyField(Arte, blank=True)  # várias artes por pedido
     data_criacao = models.DateTimeField(default=timezone.now)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Pendente')

@@ -1,10 +1,13 @@
 from django.shortcuts import render
+from django.shortcuts import get_object_or_404, redirect
 from django.contrib.auth.forms import UserCreationForm
+from django.views import View
 from django.views.generic import ListView
 from django.views.generic import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
-from .models import Arte, Categoria, Usuario
+from .models import Arte, Categoria, Usuario, Pedido
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 
@@ -19,12 +22,12 @@ class GaleriaPublicaView(ListView):
         categoria_nome = self.request.GET.get('categoria')
         if categoria_nome:
             qs = qs.filter(categoria__nome__iexact=categoria_nome)
-        return qs
+        return qs.exclude(id__isnull=True)  # remove qualquer arte sem id
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['categorias'] = Categoria.objects.all()
-        return context    
+        return context
     
 class UsuarioCreateView(CreateView):
     model = Usuario
@@ -39,6 +42,45 @@ class UsuarioCreateView(CreateView):
         usuario.save()
         return super().form_valid(form)
 
+class AdicionarAoPedidoView(LoginRequiredMixin, View):
+    def post(self, request, arte_id):
+        arte = get_object_or_404(Arte, id=arte_id)
+        usuario = request.user
+
+        # Cria ou pega o pedido pendente do usuário
+        pedido, criado = Pedido.objects.get_or_create(
+            cliente=usuario,
+            status='Pendente'
+        )
+
+        # Adiciona a arte ao pedido
+        pedido.artes.add(arte)
+
+        # Atualiza o total agora que a ManyToMany existe
+        pedido.total = pedido.calcular_total()
+        pedido.save()
+
+        return redirect('galeria')
+
+    
+# Lista pedidos do usuarios
+class MeusPedidosView(LoginRequiredMixin, ListView):
+    model = Pedido
+    template_name = 'paginas/meus_pedidos.html'
+    context_object_name = 'pedidos'
+
+    def get_queryset(self):
+        # Só mostra os pedidos do usuário logado, do mais recente para o mais antigo
+        return Pedido.objects.filter(cliente=self.request.user,status='Pendente').order_by('-data_criacao')
+    
+# Finaliza
+class FinalizarPedidoView(LoginRequiredMixin, View):
+    def post(self, request, pedido_id):
+        pedido = get_object_or_404(Pedido, id=pedido_id, cliente=request.user)
+        pedido.status = 'Entregue'
+        pedido.save()
+        return redirect('meus_pedidos')
+    
 
 # Admin ----------------------------------------------------------------------------
 class ArteListView(LoginRequiredMixin, UserPassesTestMixin, ListView):

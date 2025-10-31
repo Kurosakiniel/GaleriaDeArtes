@@ -1,0 +1,40 @@
+<h1>Meus Pedidos</h1>
+
+{% if pedidos %}
+    {% for pedido in pedidos %}
+        <div style="border:1px solid #ccc; padding:10px; margin-bottom:15px;">
+            <h3>Pedido #{{ pedido.id }} - {{ pedido.status }}</h3>
+            <p>Data: {{ pedido.data_criacao }}</p>
+            <p>Total: R$ {{ pedido.total }}</p>
+            <strong>Artes:</strong>
+            <ul>
+                {% for arte in pedido.artes.all %}
+                    <li>
+                        {{ arte.nome }} - R$ {{ arte.preco }}
+                        {% if arte.imagem %}
+                            <img src="{{ arte.imagem.url }}" alt="{{ arte.nome }}" style="width:100px;">
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endfor %}
+{% else %}
+    <p>Você ainda não adicionou nenhuma arte.</p>
+{% endif %}
+
+{% for pedido in pedidos %}
+<div style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">
+    <h3>Pedido #{{ pedido.id }} - {{ pedido.status }}</h3>
+    <p>Total: R$ {{ pedido.total }}</p>
+
+    {% if pedido.status == 'Pendente' %}
+    <form method="post" action="{% url 'finalizar_pedido' pedido.id %}">
+        {% csrf_token %}
+        <button type="submit">Concluir Pedido</button>
+    </form>
+    {% else %}
+        <span style="color: green;">Pedido concluído!</span>
+    {% endif %}
+</div>
+{% endfor %}
