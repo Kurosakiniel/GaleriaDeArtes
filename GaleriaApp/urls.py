@@ -5,13 +5,18 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
+    # CRUDzinho do A
     path('lista/', ArteListView.as_view(), name='arte_list'),
     path('nova/', ArteCreateView.as_view(), name='arte-create'),
     path('<int:pk>/editar/', ArteUpdateView.as_view(), name='arte-update'),
-    path('<int:pk>/deletar/', ArteDeleteView.as_view(), name='arte-delete'), # até aqui é só admin que vê
-    path('login/', LoginView.as_view(template_name='paginas/login.html'), name='login'), # Aqui pra baixo é coisa de usuário
-    path('logout/', LogoutView.as_view(next_page='galeria'), name='logout'),
+    path('<int:pk>/deletar/', ArteDeleteView.as_view(), name='arte-delete'), 
+
+    # A galeria em si ai
     path('galeria/', GaleriaPublicaView.as_view(), name='galeria'),
+
+    # login / logout e  criar conta
+    path('login/', LoginView.as_view(template_name='paginas/login.html'), name='login'), 
+    path('logout/', LogoutView.as_view(next_page='galeria'), name='logout'),
     path('criar-conta/', UsuarioCreateView.as_view(), name='usuario_create'), 
 ]
 

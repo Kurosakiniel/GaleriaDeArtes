@@ -4,28 +4,11 @@ from django.views.generic import ListView
 from django.views.generic import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from .models import Arte, Categoria, Usuario
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
 # Create your views here.
 
-# Usuario --------------------------------------------------------------------------
-class ArteListView(ListView):
-    model = Arte
-    template_name = 'paginas/arte_list.html'  
-    context_object_name = 'artes'  
-
-    def get_queryset(self):
-        qs = super().get_queryset()
-        categoria_nome = self.request.GET.get('categoria')  
-        if categoria_nome:
-            qs = qs.filter(categoria__nome__iexact=categoria_nome)
-        return qs
-    
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['categorias'] = Categoria.objects.all()  
-        return context
-    
+# Usuario --------------------------------------------------------------------------   
 class GaleriaPublicaView(ListView):
     model = Arte
     template_name = 'paginas/arte_publica.html'
@@ -58,7 +41,7 @@ class UsuarioCreateView(CreateView):
 
 
 # Admin ----------------------------------------------------------------------------
-class ArteListView(ListView):
+class ArteListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
     model = Arte
     template_name = 'paginas/arte_list.html'  
     context_object_name = 'artes'  
@@ -74,6 +57,10 @@ class ArteListView(ListView):
         context = super().get_context_data(**kwargs)
         context['categorias'] = Categoria.objects.all()  
         return context
+    
+    def test_func(self):
+        # só admin ou staff podem acessar /lista/
+        return self.request.user.is_staff
 
 class ArteCreateView(CreateView):
     model = Arte
