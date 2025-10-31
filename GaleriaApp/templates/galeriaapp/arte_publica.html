@@ -29,20 +29,35 @@
         {% endif %}
     </div>
 
-    <!-- Filtro por categoria -->
-    <form method="get" class="mb-4">
-        <div class="input-group">
-            <label class="input-group-text" for="categoria">Filtrar por categoria</label>
-            <select name="categoria" id="categoria" class="form-select" onchange="this.form.submit()">
-                <option value="">Todas as categorias</option>
-                {% for categoria in categorias %}
-                    <option value="{{ categoria.nome }}" {% if request.GET.categoria == categoria.nome %}selected{% endif %}>
-                        {{ categoria.nome }}
-                    </option>
-                {% endfor %}
-            </select>
+    <!-- Filtros -->
+    <div class="row mb-4">
+        <div class="col-md-6 mb-2 mb-md-0">
+            <form method="get" class="d-flex">
+                <label class="input-group-text me-2" for="categoria">Categoria:</label>
+                <select name="categoria" id="categoria" class="form-select" onchange="this.form.submit()">
+                    <option value="">Todas as categorias</option>
+                    {% for categoria in categorias %}
+                        <option value="{{ categoria.nome }}" {% if request.GET.categoria == categoria.nome %}selected{% endif %}>
+                            {{ categoria.nome }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </form>
         </div>
-    </form>
+        <div class="col-md-6">
+            <form method="get" class="d-flex">
+                <label class="input-group-text me-2" for="ordenar">Ordenar:</label>
+                <select name="ordenar" id="ordenar" class="form-select me-2">
+                    <option value="">Ordenar por...</option>
+                    <option value="nome" {% if request.GET.ordenar == "nome" %}selected{% endif %}>Nome (A-Z)</option>
+                    <option value="-nome" {% if request.GET.ordenar == "-nome" %}selected{% endif %}>Nome (Z-A)</option>
+                    <option value="preco" {% if request.GET.ordenar == "preco" %}selected{% endif %}>Preço (menor-maior)</option>
+                    <option value="-preco" {% if request.GET.ordenar == "-preco" %}selected{% endif %}>Preço (maior-menor)</option>
+                </select>
+                <button type="submit" class="btn btn-primary">Filtrar</button>
+            </form>
+        </div>
+    </div>
 
     <!-- Listagem das artes -->
     <div class="row g-4">
@@ -72,6 +87,19 @@
         {% empty %}
             <p class="text-center">Nenhuma arte encontrada.</p>
         {% endfor %}
+    </div>
+
+    <!-- Paginação -->
+    <div class="d-flex justify-content-center mt-4 gap-3">
+        {% if page_obj.has_previous %}
+            <a class="btn btn-outline-secondary" href="?page={{ page_obj.previous_page_number }}{% if request.GET.busca %}&busca={{ request.GET.busca }}{% endif %}{% if request.GET.categoria %}&categoria={{ request.GET.categoria }}{% endif %}{% if request.GET.ordenar %}&ordenar={{ request.GET.ordenar }}{% endif %}">Anterior</a>
+        {% endif %}
+
+        <span class="align-self-center">Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
+
+        {% if page_obj.has_next %}
+            <a class="btn btn-outline-secondary" href="?page={{ page_obj.next_page_number }}{% if request.GET.busca %}&busca={{ request.GET.busca }}{% endif %}{% if request.GET.categoria %}&categoria={{ request.GET.categoria }}{% endif %}{% if request.GET.ordenar %}&ordenar={{ request.GET.ordenar }}{% endif %}">Próxima</a>
+        {% endif %}
     </div>
 </div>
 {% endblock %}
