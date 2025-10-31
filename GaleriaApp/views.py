@@ -1,14 +1,10 @@
-from django.shortcuts import render
 from django.shortcuts import get_object_or_404, redirect
-from django.contrib.auth.forms import UserCreationForm
-from django.views import View
-from django.views.generic import ListView
-from django.views.generic import CreateView, UpdateView, DeleteView
+from django.views.generic import View, ListView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from .models import Arte, Categoria, Usuario, Pedido
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
+
 # Create your views here.
 
 # Usuario --------------------------------------------------------------------------   
