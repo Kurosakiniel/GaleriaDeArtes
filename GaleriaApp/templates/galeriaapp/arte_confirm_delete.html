@@ -1,0 +1,24 @@
+{% extends 'galeriaapp/base.html' %}
+
+{% block title %}Excluir Arte - Galeria de Artes{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center mt-5">
+    <div class="col-md-6">
+        <div class="card border-danger">
+            <div class="card-header bg-danger text-white">
+                Excluir Arte
+            </div>
+            <div class="card-body">
+                <p>Tem certeza que deseja excluir "<strong>{{ object.nome }}</strong>"?</p>
+                
+                <form method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Confirmar exclusão</button>
+                    <a href="{% url 'arte_list' %}" class="btn btn-secondary">Cancelar</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

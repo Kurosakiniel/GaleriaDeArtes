@@ -1,0 +1,28 @@
+{% extends 'galeriaapp/base.html' %}
+
+{% block title %}Artes Compradas{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Artes Compradas</h1>
+
+<div class="row g-4">
+    {% for arte in artes %}
+        <div class="col-md-4 col-sm-6">
+            <div class="card h-100">
+                {% if arte.imagem %}
+                    <img src="{{ arte.imagem.url }}" class="card-img-top" alt="{{ arte.nome }}">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ arte.nome }}</h5>
+                    {% if arte.descricao %}
+                        <p class="card-text">{{ arte.descricao }}</p>
+                    {% endif %}
+                    <p class="card-text"><strong>R$ {{ arte.preco }}</strong></p>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <p>Você ainda não comprou nenhuma arte.</p>
+    {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends 'galeriaapp/base.html' %}
+
+{% block title %}Meus Pedidos{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Meus Pedidos</h1>
+
+<div class="row">
+    {% for pedido in pedidos %}
+        <div class="col-md-6 mb-4">
+            <div class="card h-100 border-primary">
+                <div class="card-header bg-primary text-white">
+                    Pedido #{{ pedido.id }} - {{ pedido.status }}
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush mb-3">
+                        {% for arte in pedido.artes.all %}
+                            <li class="list-group-item d-flex justify-content-between">
+                                {{ arte.nome }}
+                                <span>R$ {{ arte.preco }}</span>
+                            </li>
+                        {% empty %}
+                            <li class="list-group-item">Nenhuma arte neste pedido.</li>
+                        {% endfor %}
+                    </ul>
+                    <p><strong>Total:</strong> R$ {{ pedido.total }}</p>
+                </div>
+                <div class="card-footer">
+                    {% if pedido.status == 'Pendente' %}
+                        <form method="post" action="{% url 'finalizar_pedido' pedido.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-success btn-sm">Concluir Pedido</button>
+                        </form>
+                    {% else %}
+                        <span class="text-success fw-bold">Pedido concluído!</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <p>Você não possui pedidos.</p>
+    {% endfor %}
+</div>
+{% endblock %}

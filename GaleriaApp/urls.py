@@ -1,7 +1,6 @@
 from django.urls import path
 from django.contrib.auth.views import LoginView, LogoutView
-from .views import ArteListView, ArteCreateView, ArteUpdateView, ArteDeleteView, GaleriaPublicaView, UsuarioCreateView
-from .views import AdicionarAoPedidoView, MeusPedidosView, FinalizarPedidoView, ArtesCompradasView
+from .views import ArteListView, ArteCreateView, ArteUpdateView, ArteDeleteView, GaleriaPublicaView, UsuarioCreateView, AdicionarAoPedidoView, MeusPedidosView, FinalizarPedidoView, ArtesCompradasView
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -22,7 +21,7 @@ urlpatterns = [
     path('artes-compradas/', ArtesCompradasView.as_view(), name='artes_compradas'),
 
     # login / logout e  criar conta
-    path('login/', LoginView.as_view(template_name='paginas/login.html'), name='login'), 
+    path('login/', LoginView.as_view(template_name='galeriaapp/login.html'), name='login'),
     path('logout/', LogoutView.as_view(next_page='galeria'), name='logout'),
     path('criar-conta/', UsuarioCreateView.as_view(), name='usuario_create'), 
 ]

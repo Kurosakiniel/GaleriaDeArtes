@@ -1,16 +1,16 @@
 from django.shortcuts import get_object_or_404, redirect
-from django.views.generic import View, ListView, CreateView, UpdateView, DeleteView
+from django.views import View
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from .models import Arte, Categoria, Usuario, Pedido
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.core.paginator import Paginator
 
 # Create your views here.
 
 # Usuario --------------------------------------------------------------------------   
 class GaleriaPublicaView(ListView):
     model = Arte
-    template_name = 'paginas/arte_publica.html'
+    template_name = 'galeriaapp/arte_publica.html'
     context_object_name = 'artes'
     paginate_by = 6  # número de artes por página
 
@@ -37,7 +37,7 @@ class GaleriaPublicaView(ListView):
 class UsuarioCreateView(CreateView):
     model = Usuario
     fields = ['username', 'email', 'idade', 'password']  
-    template_name = 'paginas/usuario_form.html'
+    template_name = 'galeriaapp/usuario_form.html'
     success_url = reverse_lazy('login')  # redireciona pro login após cadastro
 
     def form_valid(self, form):
@@ -71,7 +71,7 @@ class AdicionarAoPedidoView(LoginRequiredMixin, View):
 # Lista pedidos do usuarios
 class MeusPedidosView(LoginRequiredMixin, ListView):
     model = Pedido
-    template_name = 'paginas/meus_pedidos.html'
+    template_name = 'galeriaapp/meus_pedidos.html'
     context_object_name = 'pedidos'
 
     def get_queryset(self):
@@ -88,7 +88,7 @@ class FinalizarPedidoView(LoginRequiredMixin, View):
 
 class ArtesCompradasView(LoginRequiredMixin, ListView):
     model = Arte
-    template_name = 'paginas/artes_compradas.html'
+    template_name = 'galeriaapp/artes_compradas.html'
     context_object_name = 'artes'
 
     def get_queryset(self):
@@ -98,9 +98,10 @@ class ArtesCompradasView(LoginRequiredMixin, ListView):
 # Admin ----------------------------------------------------------------------------
 class ArteListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
     model = Arte
-    template_name = 'paginas/arte_list.html'  
-    context_object_name = 'artes' 
+    template_name = 'galeriaapp/arte_list.html'  
+    context_object_name = 'artes'  
     paginate_by = 10  # número de artes por página
+
 
     def get_queryset(self):
         qs = super().get_queryset()
@@ -128,16 +129,16 @@ class ArteListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
 class ArteCreateView(CreateView):
     model = Arte
     fields = ['nome', 'categoria', 'preco', 'imagem', 'descricao']
-    template_name = 'paginas/arte_form.html'
+    template_name = 'galeriaapp/arte_form.html'
     success_url = reverse_lazy('arte_list')
 
 class ArteUpdateView(UpdateView):
     model = Arte
     fields = ['nome', 'categoria', 'preco', 'imagem', 'descricao']
-    template_name = 'paginas/arte_form.html'
+    template_name = 'galeriaapp/arte_form.html'
     success_url = reverse_lazy('arte_list')
 
 class ArteDeleteView(DeleteView):
     model = Arte
-    template_name = 'paginas/arte_confirm_delete.html'
+    template_name = 'galeriaapp/arte_confirm_delete.html'
     success_url = reverse_lazy('arte_list')
