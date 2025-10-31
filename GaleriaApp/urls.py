@@ -1,11 +1,11 @@
 from django.urls import path
 from django.contrib.auth.views import LoginView, LogoutView
-from .views import ArteListView, ArteCreateView, ArteUpdateView, ArteDeleteView, GaleriaPublicaView, UsuarioCreateView
+from .views import ArteListView, ArteCreateView, ArteUpdateView, ArteDeleteView, GaleriaPublicaView, UsuarioCreateView, AdicionarAoPedidoView, MeusPedidosView, FinalizarPedidoView, ArtesCompradasView
 from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    # CRUDzinho do A
+    # CRUDzinho do Adm
     path('lista/', ArteListView.as_view(), name='arte_list'),
     path('nova/', ArteCreateView.as_view(), name='arte-create'),
     path('<int:pk>/editar/', ArteUpdateView.as_view(), name='arte-update'),
@@ -14,8 +14,14 @@ urlpatterns = [
     # A galeria em si ai
     path('galeria/', GaleriaPublicaView.as_view(), name='galeria'),
 
+    #Usuario
+    path('adicionar/<int:arte_id>/', AdicionarAoPedidoView.as_view(), name='adicionar_ao_pedido'),
+    path('meus-pedidos/', MeusPedidosView.as_view(), name='meus_pedidos'),
+    path('finalizar/<int:pedido_id>/', FinalizarPedidoView.as_view(), name='finalizar_pedido'),
+    path('artes-compradas/', ArtesCompradasView.as_view(), name='artes_compradas'),
+
     # login / logout e  criar conta
-    path('login/', LoginView.as_view(template_name='paginas/login.html'), name='login'), 
+    path('login/', LoginView.as_view(template_name='galeriaapp/login.html'), name='login'),
     path('logout/', LogoutView.as_view(next_page='galeria'), name='logout'),
     path('criar-conta/', UsuarioCreateView.as_view(), name='usuario_create'), 
 ]
