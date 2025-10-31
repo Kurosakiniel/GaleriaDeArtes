@@ -1,16 +1,38 @@
-from django.contrib.auth.models import AbstractBaseUser
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.utils import timezone
 from django.db import models
 
 # Create your models here.
-class Usuario(AbstractBaseUser):
-    #colocando idade como um adicional
-    idade = models.PositiveIntegerField(null=True, blank=True)
+class UsuarioManager(BaseUserManager,):
+    def create_user(self, email, password=None, **extra_fields):
+        if not email:
+            raise ValueError('O usuário deve ter um email')
+        email = self.normalize_email(email)
+        user = self.model(email=email, **extra_fields)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
 
-    #nao dar caquinha
+    def create_superuser(self, email, password=None, **extra_fields):
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+        return self.create_user(email, password, **extra_fields)
+
+class Usuario(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
+    username = models.CharField(max_length=100, blank=True, null=True)  # opcional
+    idade = models.PositiveIntegerField(null=True, blank=True)
+    is_active = models.BooleanField(default=True)
+    is_staff = models.BooleanField(default=False)
+
+    objects = UsuarioManager()
+
+    USERNAME_FIELD = 'email'   # login pelo email
+    REQUIRED_FIELDS = []       # não precisa de outros campos obrigatórios
+
     def __str__(self):
-        return self.username
+        # se o username estiver definido, mostra ele, senão mostra email
+        return self.username if self.username else self.email
 
 class Categoria(models.Model):
     nome = models.CharField(max_length=100, unique=True)
