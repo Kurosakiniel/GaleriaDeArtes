@@ -7,12 +7,8 @@ from django.views.generic import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from .models import Arte, Categoria, Usuario, Pedido
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-<<<<<<< HEAD
 from django.contrib.auth.decorators import login_required
-
-=======
 from django.core.paginator import Paginator
->>>>>>> becf18b (Ajeitando)
 # Create your views here.
 
 # Usuario --------------------------------------------------------------------------   
@@ -26,22 +22,16 @@ class GaleriaPublicaView(ListView):
         qs = super().get_queryset()
         categoria_nome = self.request.GET.get('categoria')
         buscar = self.request.GET.get('buscar')
+        ordenacao = self.request.GET.get('ordenar') 
         if categoria_nome:
             qs = qs.filter(categoria__nome__iexact=categoria_nome)
-<<<<<<< HEAD
-        return qs.exclude(id__isnull=True)  # remove qualquer arte sem id
-=======
         if buscar:
             qs = qs.filter(nome__icontains=buscar) | qs.filter(descricao__icontains=buscar)
-        return qs
-    
-        # Ordenação
-        ordenacao = self.request.GET.get('ordenar')
         if ordenacao:
             qs = qs.order_by(ordenacao)
 
-        return qs
->>>>>>> becf18b (Ajeitando)
+        return qs.exclude(id__isnull=True)  # remove qualquer arte sem id
+
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

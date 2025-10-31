@@ -59,8 +59,8 @@
         <p>{{ arte.descricao }}</p>
         <p><strong>R$ {{ arte.preco }}</strong></p>
 
-<<<<<<< HEAD
-        {% if user.is_authenticated %}
+            
+            {% if user.is_authenticated %}
             <!-- Aqui está o form correto -->
             <form method="post" action="{% url 'adicionar_ao_pedido' arte.id %}">
                 {% csrf_token %}
@@ -70,18 +70,6 @@
             <a href="{% url 'login' %}?next={% url 'galeria' %}">Comprar</a>
         {% endif %}
     </div>
-{% endfor %}
-</div>
-=======
-            {% if user.is_authenticated %}
-                <form action="#" method="post">
-                    {% csrf_token %}
-                    <button type="submit">Comprar</button>
-                </form>
-            {% else %}
-                <a href="{% url 'login' %}?next={% url 'galeria' %}">Comprar</a>
-            {% endif %}
-        </div>
     {% empty %}
         <p>Nenhuma arte encontrada.</p>
     {% endfor %}
@@ -101,4 +89,4 @@
         <a href="?page={{ page_obj.next_page_number }}{% if request.GET.busca %}&busca={{ request.GET.busca }}{% endif %}{% if request.GET.categoria %}&categoria={{ request.GET.categoria }}{% endif %}{% if request.GET.ordenar %}&ordenar={{ request.GET.ordenar }}{% endif %}">Próxima</a>
     {% endif %}
 </div>
->>>>>>> becf18b (Ajeitando)
+
