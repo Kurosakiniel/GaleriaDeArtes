@@ -80,7 +80,15 @@ class FinalizarPedidoView(LoginRequiredMixin, View):
         pedido.status = 'Entregue'
         pedido.save()
         return redirect('meus_pedidos')
-    
+
+class ArtesCompradasView(LoginRequiredMixin, ListView):
+    model = Arte
+    template_name = 'paginas/artes_compradas.html'
+    context_object_name = 'artes'
+
+    def get_queryset(self):
+        # Pega todas as artes dos pedidos concluídos do usuário
+        return Arte.objects.filter(pedido__cliente=self.request.user, pedido__status='Entregue').distinct()
 
 # Admin ----------------------------------------------------------------------------
 class ArteListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
